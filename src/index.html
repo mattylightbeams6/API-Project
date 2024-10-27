@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Project</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <img src="../res/main_bg.jpg" id="main-bg">
+        
+        <div class="card" id="search-card">
+            <div class="search-title">
+                <p class="title">Air Pollution Checker</p>
+                <p class="subtitle">Powered by <strong>OpenWeatherMap</strong></p>
+            </div>
+            <div class="search-note hidden">
+                <p>...</p>
+            </div>
+            <div class="search-field">
+                <input type="text" class="search-bar" id="search-city" placeholder="Search city here...">
+                <button class="search-button" onclick="findArea()">Search</button>
+            </div>
+        </div>
+
+        <div class="card hidden" id="info-card">
+            <div class="info-title">
+                <p class="title">City Details</p>
+                <p class="subtitle">Data fetched for your city!</p>
+            </div>
+            <button class="info-button" onclick="goBack()">Go Back</button>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <!-- <div class="card">
+        <label>Search area:</label>
+        <input type="text" id="area">
+        <button type="button">Enter</button>
+    </div> -->
+
+
+    <script src="script.js"></script>
+</body>
+</html>
