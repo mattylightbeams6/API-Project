@@ -1,3 +1,47 @@
+async function searchCity() {
+    let searchInput = document.getElementById("search-input");
+    let cityToFind = searchInput.value;
+    
+    if (cityToFind.length < 1) {
+        document.getElementById("search-error").classList.remove("hide");
+        document.getElementById("search-error").textContent = "Search field cannot be empty.";
+        return;
+    }
+    
+    let searchResult = await getCityLatLon(cityToFind);
+    if (!searchResult) {
+        document.getElementById("search-error").classList.remove("hide");
+        document.getElementById("search-error").textContent = "City not found.";
+        return;
+    }
+
+    document.getElementById("bottom-box-p").textContent = `Current Air Quality in your search: ${cityToFind}`;
+
+    let lat = searchResult.lat;
+    let lon = searchResult.lon;
+    processAirData(lat, lon);
+    
+    document.getElementById("search-error").classList.add("hide");
+    document.getElementById("search-input").value = "";
+}
+
+async function getCityLatLon(cityToFind) {
+    const geoCall = `http://api.openweathermap.org/geo/1.0/direct?q=${cityToFind}&limit=1&appid=8975f6507977ae6b439590f714d09db9`;
+    return fetch(geoCall)
+        .then(response => response.json())
+        .then(locationData => {
+            if (locationData.length === 0) { return false; }
+
+            const lat = locationData[0].lat;
+            const lon = locationData[0].lon;
+            return { lat, lon };
+        })
+        .catch(error => {
+            console.error("Error fetching data: ", error);
+            return false;
+        });
+}
+
 function getNearbyData() {
     let ipApiCall = 'http://ip-api.com/json/';
     return fetch(ipApiCall)
@@ -6,7 +50,7 @@ function getNearbyData() {
             return { lat: data.lat, lon: data.lon };
         })
         .catch(error => console.error('Error:', error)
-    );
+        );
 }
 
 function processAirData(lat, lon) {
@@ -43,22 +87,52 @@ function processAirData(lat, lon) {
 function getAQIStatus(aqi) {
     switch (aqi) {
         case 1:
-            document.getElementById("bottom-box").style.border = "4px solid rgb(0, 128, 0)";
+            document.getElementById("bottom-box").classList.remove("glow-yellowgreen");
+            document.getElementById("bottom-box").classList.remove("glow-orange");
+            document.getElementById("bottom-box").classList.remove("glow-red");
+            document.getElementById("bottom-box").classList.remove("glow-purple");
+            document.getElementById("bottom-box").classList.remove("glow-black");
+            document.getElementById("bottom-box").classList.add("glow-green");
             return 'Good';
         case 2:
-            document.getElementById("bottom-box").style.border = "4px solid rgb(173, 255, 47)";
+            document.getElementById("bottom-box").classList.remove("glow-green");
+            document.getElementById("bottom-box").classList.remove("glow-orange");
+            document.getElementById("bottom-box").classList.remove("glow-red");
+            document.getElementById("bottom-box").classList.remove("glow-purple");
+            document.getElementById("bottom-box").classList.remove("glow-black");
+            document.getElementById("bottom-box").classList.add("glow-yellowgreen");
             return 'Fair';
         case 3:
-            document.getElementById("bottom-box").style.border = "4px solid rgb(255, 165, 0)";
+            document.getElementById("bottom-box").classList.remove("glow-green");
+            document.getElementById("bottom-box").classList.remove("glow-yellowgreen");
+            document.getElementById("bottom-box").classList.remove("glow-red");
+            document.getElementById("bottom-box").classList.remove("glow-purple");
+            document.getElementById("bottom-box").classList.remove("glow-black");
+            document.getElementById("bottom-box").classList.add("glow-orange");
             return 'Moderate';
         case 4:
-            document.getElementById("bottom-box").style.border = "4px solid rgb(255, 69, 0)"; 
+            document.getElementById("bottom-box").classList.remove("glow-green");
+            document.getElementById("bottom-box").classList.remove("glow-yellowgreen");
+            document.getElementById("bottom-box").classList.remove("glow-orange");
+            document.getElementById("bottom-box").classList.remove("glow-purple");
+            document.getElementById("bottom-box").classList.remove("glow-black");
+            document.getElementById("bottom-box").classList.add("glow-red");
             return 'Poor';
         case 5:
-            document.getElementById("bottom-box").style.border = "4px solid rgb(139, 0, 0)"; 
+            document.getElementById("bottom-box").classList.remove("glow-green");
+            document.getElementById("bottom-box").classList.remove("glow-yellowgreen");
+            document.getElementById("bottom-box").classList.remove("glow-orange");
+            document.getElementById("bottom-box").classList.remove("glow-red");
+            document.getElementById("bottom-box").classList.remove("glow-black");
+            document.getElementById("bottom-box").classList.add("glow-purple");
             return 'Very Poor';
         default:
-            document.getElementById("bottom-box").style.border = "4px solid rgb(0, 0, 0)"; 
+            document.getElementById("bottom-box").classList.remove("glow-green");
+            document.getElementById("bottom-box").classList.remove("glow-yellowgreen");
+            document.getElementById("bottom-box").classList.remove("glow-orange");
+            document.getElementById("bottom-box").classList.remove("glow-red");
+            document.getElementById("bottom-box").classList.remove("glow-purple");
+            document.getElementById("bottom-box").classList.add("glow-black");
             return 'unknown';
     }
 }
@@ -151,4 +225,4 @@ window.onload = () => {
     getNearbyData().then(coords => {
         processAirData(coords.lat, coords.lon)
     })
-}
+}   
